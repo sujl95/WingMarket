@@ -1,0 +1,72 @@
+Configutation:
+  name: Default
+  status: info
+
+  Properties:
+    Property:
+      - name: log-path
+        value: "logs"
+      - name: layoutPattern
+        value: "%style{%d{yyyy-MM-dd HH:mm:ss.SSS}}{cyan} %highlight{[%-5level]}{FATAL=bg_red, ERROR=Red,
+                            INFO=Green, DEBUG=Blue} --- %style{[%t]}{Blue} %style{[%C]}{Magenta} %style{[line - %L]}{Yellow} - %m%n"
+
+  Appenders:
+    Console:
+      # Console 에 system.out 로그 출력 Appender
+      name: Console_Appender
+      # 출력 방식 SYSTEM_OUT, SYSTEM_ERR 로 출력가능
+      target: SYSTEM_OUT
+      PatternLayout:
+        pattern: ${layoutPattern}
+        disableAnsi: "false"
+    File:
+      name: File_Appender
+      fileName: ${log-path}/logfile.log
+      PatternLayout:
+        pattern: ${layoutPattern}
+        disableAnsi: "false"
+    RollingFile:
+      # 로그가 한 파일에 계속 저장되면 파일이 너무 커져서 실행이 불가능하기 때문에 문제가 생길 시
+      # 로그를 날리지 않기 위해 해결하기 위한 RollingFile_Appender
+      # 파일에 로그를 기록하고, 특정 기준에 따라 압축하여 저장하는 방식의 Appender
+      # Console Appender와 차이 : File과 관련된 속성, Policy와 관련 속성, Strategy와 관련된 속성
+      # 1KB 가 되는 시점과 하루마다 filePattern 에 맞게 압축되어 저장
+      - name: RollingFile_Appender
+        fileName: ${log-path}/user_deal.log
+        filePattern: "logs/archive/user_deal.log.%d{yyyy-MM-dd-hh-mm}.gz"
+        PatternLayout:
+          pattern: ${layoutPattern}
+          disableAnsi: "false"
+        Policies:
+          # SizeBasedTriggeringPolicy : file size에 따른 트리거
+          SizeBasedTriggeringPolicy:
+            size: 200 KB
+          # DefaultRollOverStrategy : datetime 패턴과 파일 패턴의 int 값을 받아서 결정
+          # datetime 은 현재시간으로 대체, 파일 패턴 숫자는 db의 A.C 처럼 rollover 마다 1씩 증가
+        DefaultRollOverStrategy:
+          # max : counter 최대값, 만약 최대값에 도달하면 오래된 파일을 삭제, 기본값은 7
+          max: 30
+  Loggers:
+    Root:
+      level: info
+      AppenderRef:
+        - ref: Console_Appender
+        - ref: File_Appender
+        - ref: RollingFile_Appender
+    # logger 설정
+    Logger:
+      - name: me.WingMarket
+        # Additivity false 하위 패키지 적용안하고 해당 패키지만 적용
+        additivity: false
+        level: info
+        AppenderRef:
+          - ref: Console_Appender
+          - ref: File_Appender
+          - ref: RollingFile_Appender
+      - name: me.WingMarket.error.ExceptionhandlerController
+        additivity: false
+        level: error
+        AppenderRef:
+          - ref: Console_Appender
+          - ref: File_Appender
+          - ref: RollingFile_Appender

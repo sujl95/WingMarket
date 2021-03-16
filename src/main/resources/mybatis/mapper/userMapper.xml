@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="me.wingmarket.repository.mapper.UserMapper">
+
+    <resultMap id="User" type="me.wingmarket.entity.User">
+        <id property="id" column="ID"/>
+        <result property="userId" column="USER_ID"/>
+        <result property="locationName" column="LOCATION_NAME"/>
+        <result property="locationId" column="LOCATION_ID"/>
+        <result property="password" column="PASSWORD"/>
+        <result property="nickname" column="NICKNAME"/>
+        <result property="phone" column="PHONE"/>
+        <result property="email" column="EMAIL"/>
+        <result property="role" column="ROLE"/>
+        <result property="status" column="STATUS"/>
+        <association property="userDate" javaType="me.wingmarket.dto.UserDate">
+            <result property="regDate" column="REG_DATE"/>
+            <result property="modDate" column="MOD_DATE"/>
+            <result property="loginDate" column="LOGIN_DATE"/>
+        </association>
+        <association property="position" javaType="me.wingmarket.dto.Position">
+            <id property="latitude" column="LATITUDE"/>
+            <result property="longitude" column="LONGITUDE"/>
+        </association>
+    </resultMap>
+
+    <insert id="save" parameterType="me.wingmarket.entity.User" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO USER
+        SET USER_ID = #{userId},
+            LOCATION_NAME = #{locationName},
+            LOCATION_ID = #{locationId},
+            PASSWORD = #{password},
+            NICKNAME = #{nickname},
+            PHONE = #{phone},
+            EMAIL = #{email},
+            REG_DATE = #{userDate.regDate},
+            MOD_DATE = #{userDate.modDate},
+            LOGIN_DATE = #{userDate.loginDate},
+            ROLE = #{role},
+            STATUS = #{status},
+            LATITUDE = #{position.latitude},
+            LONGITUDE = #{position.longitude}
+    </insert>
+    <update id="updateLocation" keyProperty="id">
+        UPDATE USER
+        SET LOCATION_NAME = #{location.locationName},
+            LOCATION_ID = #{location.id},
+            LATITUDE = #{location.position.latitude},
+            LONGITUDE = #{location.position.longitude}
+        WHERE ID = #{userId}
+    </update>
+
+    <select id="findById" resultMap="User">
+        SELECT *
+        FROM USER
+        WHERE id = #{id}
+          AND status != 'DELETED'
+    </select>
+
+    <select id="idCheck" resultType="boolean">
+        SELECT COUNT(USER_ID)
+        FROM USER
+        WHERE USER_ID = #{userId}
+    </select>
+
+    <select id="findByNickName" resultType="me.wingmarket.dto.UserFindDto">
+        SELECT ID,
+               NICKNAME,
+               LOCATION_NAME
+        FROM USER
+        WHERE NICKNAME LIKE '%${nickname}%'
+          AND status != 'DELETED'
+    </select>
+
+    <select id="findByIdAndPassword" resultMap="User">
+        SELECT *
+        FROM USER
+        WHERE USER_ID = #{id}
+        AND PASSWORD = #{password}
+        AND STATUS != 'DELETED'
+    </select>
+
+</mapper>

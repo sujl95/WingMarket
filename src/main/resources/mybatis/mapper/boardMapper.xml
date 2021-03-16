@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="me.wingmarket.repository.mapper.BoardMapper">
+
+    <resultMap id="BoardDetailDto" type="me.wingmarket.dto.BoardDetailDto">
+        <id property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="nickname" column="nickname"/>
+        <result property="title" column="title"/>
+        <result property="content" column="content"/>
+        <result property="locationName" column="location_name"/>
+        <result property="price" column="price"/>
+        <result property="categoryId" column="category_id"/>
+        <result property="status" column="status"/>
+        <result property="boardDate" column="board_date"/>
+        <result property="isPull" column="IS_PULL"/>
+    </resultMap>
+
+    <insert id="save" parameterType="me.wingmarket.entity.Board" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO BOARD
+        SET USER_ID = #{userId},
+            LOCATION_NAME = #{locationName},
+            LOCATION_ID = #{locationId},
+            TITLE = #{title},
+            CONTENT = #{content},
+            PRICE = #{price},
+            CATEGORY_ID = #{categoryId},
+            STATUS = #{status},
+            REG_DATE = #{boardDate.regDate},
+            MOD_DATE = #{boardDate.modDate},
+            BOARD_DATE = #{boardDate.boardDate},
+            IS_PULL = #{isPull},
+            LATITUDE = #{position.latitude},
+            LONGITUDE = #{position.longitude}
+    </insert>
+
+    <select id="findById" resultMap="BoardDetailDto">
+        SELECT BOARD.ID,
+               BOARD.USER_ID,
+               USER.NICKNAME,
+               BOARD.TITLE,
+               BOARD.CONTENT,
+               BOARD.LOCATION_NAME,
+               BOARD.PRICE,
+               BOARD.CATEGORY_ID,
+               BOARD.STATUS,
+               BOARD.BOARD_DATE,
+               BOARD.IS_PULL
+        FROM BOARD,
+             USER
+        WHERE BOARD.USER_ID = USER.ID
+          AND BOARD.ID = #{id}
+    </select>
+
+    <select id="findByUser" resultType="me.wingmarket.dto.BoardFindDto">
+        SELECT ID,
+        TITLE,
+        LOCATION_NAME,
+        PRICE,
+        CATEGORY_ID,
+        STATUS,
+        BOARD_DATE,
+        IS_PULL
+        FROM BOARD
+        WHERE USER_ID = #{userId}
+        <if test="userId != userIdResult">
+            AND STATUS != 'HIDE'
+        </if>
+        ORDER BY BOARD_DATE
+    </select>
+
+    <select id="findByCondition" resultType="me.wingmarket.dto.BoardFindDto">
+        SELECT ID,
+        TITLE,
+        LOCATION_NAME,
+        PRICE,
+        CATEGORY_ID,
+        STATUS,
+        BOARD_DATE,
+        IS_PULL
+        <if test="boardFindRequest.range == 0">
+            FROM BOARD
+            WHERE LOCATION_NAME = #{boardFindRequest.location}
+        </if>
+        <if test="boardFindRequest.range != 0">
+            FROM (SELECT *,
+            (6371*acos(cos(radians(#{position.latitude}))*cos(radians(LATITUDE))*cos(radians(LONGITUDE)-radians(#{position.longitude}))+sin(radians(#{position.latitude}))*sin(radians(LATITUDE))))
+            AS distance
+            FROM BOARD) BOARD
+            WHERE DISTANCE <![CDATA[<=]]> #{boardFindRequest.range}
+        </if>
+        AND STATUS != 'HIDE'
+        <if test=' "TITLE".equalsIgnoreCase(boardFindRequest.filterType)'>
+            AND TITLE LIKE '%${boardFindRequest.query}%'
+        </if>
+        <if test=' "CONTENT".equalsIgnoreCase(boardFindRequest.filterType)'>
+            AND CONTENT LIKE '%${boardFindRequest.query}%'
+        </if>
+        ORDER BY BOARD_DATE
+    </select>
+
+    <update id="updateStatus" keyProperty="id">
+        UPDATE BOARD
+        <if test=' "PULL".equalsIgnoreCase(status)'>
+            SET IS_PULL = 1,
+            MOD_DATE = #{updateTime},
+            BOARD_DATE = #{updateTime}
+        </if>
+        <if test='!"PULL".equalsIgnoreCase(status)'>
+            SET STATUS = #{status},
+            MOD_DATE = #{updateTime}
+        </if>
+        WHERE ID = (SELECT BOARD.ID
+        FROM BOARD,
+        USER
+        WHERE BOARD.USER_ID = USER.ID
+        AND BOARD.ID = #{id}
+        AND USER.ID = #{userId})
+    </update>
+
+    <update id="updateBoard" keyProperty="id">
+        UPDATE BOARD
+        SET MOD_DATE    = #{updateTime},
+            TITLE       = #{boardModifyDto.title},
+            CONTENT     = #{boardModifyDto.content},
+            PRICE       = #{boardModifyDto.price},
+            CATEGORY_ID = #{boardModifyDto.categoryId}
+        WHERE ID = #{id}
+    </update>
+
+    <delete id="deleteById">
+        DELETE
+        FROM BOARD
+        WHERE ID = #{id}
+    </delete>
+
+</mapper>

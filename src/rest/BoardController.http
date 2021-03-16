@@ -1,0 +1,83 @@
+### 로그인
+POST {{apiUrl}}/users/login
+Content-Type: application/json
+Accept: application/json
+
+{
+  "id": "{{id}}",
+  "password": "{{password}}"
+}
+
+### 게시글 저장
+POST {{apiUrl}}/boards
+Content-Type: application/json
+Accept: application/json
+
+{
+  "title": "제목 청운동",
+  "content": "내용 청운동",
+  "price": "30000",
+  "categoryId": "3"
+}
+
+### 게시글 전체 조회
+GET {{apiUrl}}/boards?location=서울 종로구 청운동
+Accept: application/json
+
+### 게시글 전체 조회 - 제목
+GET {{apiUrl}}/boards?location=서울 종로구 청운동&filterType=TITLE&query=테스트
+Accept: application/json
+
+### 게시글 전체 조회 - 내용
+GET {{apiUrl}}/boards?location=서울 종로구 청운동&filterType=CONTENT&query=테스트
+Accept: application/json
+
+### 게시글 전체 조회 - 제목 , 내용
+GET {{apiUrl}}/boards?location=서울 종로구 청운동&filterType=TITLE_OR_CONTENT&query=테스트
+Accept: application/json
+
+### 게시글 전체 조회 - 제목 ,범위
+GET {{apiUrl}}/boards?location=서울 종로구 청운동&range=10&filterType=TITLE&query=테스트
+Accept: application/json
+
+### 유저별 게시글 목록
+GET {{apiUrl}}/users/1/boards
+Accept: application/json
+
+### 게시글 번호 조회 테스트
+GET {{apiUrl}}/boards/1
+Accept: application/json
+
+### 게시글 작성 가능한지 인증
+GET {{apiUrl}}/boards/region-auth/서울 종로구 청운동
+Accept: application/json
+
+### 게시글 상태 변경
+PATCH {{apiUrl}}/boards/52/status
+Accept: application/json
+Content-Type: application/json
+
+"SALE_COMPLETED"
+
+### 게시글 상태 변경, 끌어올리기
+PATCH {{apiUrl}}/boards/52/status
+Accept: application/json
+Content-Type: application/json
+
+"PULL"
+
+### 게시글 수정
+PUT {{apiUrl}}/boards/52
+Accept: application/json
+Content-Type: application/json
+
+{
+  "title": "string update",
+  "content": "string update",
+  "price": 100000,
+  "categoryId": 1
+}
+
+### 게시글 삭제
+DELETE {{apiUrl}}/boards/52
+Accept: application/json

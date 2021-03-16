@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="me.wingmarket.repository.mapper.LocationMapper">
+
+    <resultMap id="Location" type="me.wingmarket.entity.Location">
+        <id property="id" column="ID"/>
+        <result property="locationName" column="LOCATION_NAME"/>
+        <result property="province" column="PROVINCE"/>
+        <result property="city" column="CITY"/>
+        <result property="town" column="TOWN"/>
+        <result property="relatedLocation" column="RELATED_LOCATION"/>
+        <association property="position" javaType="me.wingmarket.dto.Position">
+            <result property="latitude" column="LATITUDE"/>
+            <result property="longitude" column="LONGITUDE"/>
+        </association>
+    </resultMap>
+
+    <select id="findByLocationName" resultMap="Location">
+        SELECT *
+        FROM LOCATION
+        WHERE LOCATION_NAME LIKE '${locationName}'
+    </select>
+
+    <select id="findAll" resultType="me.wingmarket.dto.LocationFindDto">
+        SELECT ID, CONCAT(TOWN, ', ', CITY) AS LOCATION_NAME, RELATED_LOCATION
+        FROM (
+                 SELECT *,
+                        (6371 *
+                         acos(cos(radians(#{position.latitude})) * cos(radians(LATITUDE)) *
+                              cos(radians(LONGITUDE) - radians(#{position.longitude})) +
+                              sin(radians(#{position.latitude})) * sin(radians(LATITUDE))))
+                            AS distance
+                 FROM LOCATION
+                 ORDER BY DISTANCE) LOCATION
+        WHERE LOCATION_NAME LIKE '%${region}%'
+           OR RELATED_LOCATION LIKE '%${region}%' LIMIT 0, 10
+    </select>
+
+</mapper>
