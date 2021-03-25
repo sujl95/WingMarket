@@ -28,50 +28,50 @@ import me.wingmarket.service.UserService;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api")
+@RequestMapping("/api/users")
 public class UserController {
 
 	private final UserService userService;
 	private final UserLoginService userLoginService;
 
 	@ResponseStatus(HttpStatus.CREATED)
-	@PostMapping("/users/register")
+	@PostMapping("/register")
 	public String register(@Valid @RequestBody UserSaveDto userSaveDto) {
 		userService.save(userSaveDto);
 		return "회원가입을 성공했습니다";
 	}
 
 	@ResponseStatus(HttpStatus.OK)
-	@GetMapping("/users/{id}")
+	@GetMapping("/{id}")
 	public UserDetailDto findById(@PathVariable Long id) {
 		return userService.findById(id);
 	}
 
 	@ResponseStatus(HttpStatus.OK)
-	@GetMapping("/users/profile")
+	@GetMapping("/profile")
 	public UserDetailDto getUserProfile(@SessionAttribute("ID") Long id) {
 		return userService.findById(id);
 	}
 
 	@ResponseStatus(HttpStatus.OK)
-	@GetMapping("/users")
+	@GetMapping
 	public List<UserFindDto> findByNickName(@RequestParam String nickname) {
 		return userService.findByNickName(nickname);
 	}
 
 	@ResponseStatus(HttpStatus.OK)
-	@GetMapping("/users/duplicate/{id}")
+	@GetMapping("/duplicate/{id}")
 	public boolean idCheck(@PathVariable String id) {
 		return userService.isDuplicatedUserId(id);
 	}
 
-	@PostMapping("/users/login")
+	@PostMapping("/login")
 	public ResponseEntity<UserLoginResponse> login(@Valid @RequestBody UserLoginRequest userLoginRequest,
 		HttpSession httpSession) {
 		return userLoginService.login(userLoginRequest, httpSession);
 	}
 
-	@GetMapping("/users/logout")
+	@GetMapping("/logout")
 	public void logout(HttpSession session) {
 		userLoginService.logout(session);
 	}

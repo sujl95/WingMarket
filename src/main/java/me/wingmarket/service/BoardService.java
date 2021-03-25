@@ -61,7 +61,7 @@ public class BoardService {
 		Board boardInfo = boardSaveDto.toEntity(userId, userInfo);
 		int result = boardMapper.save(boardInfo);
 		if (isNotReflected(result)) {
-			log.info("게시글 등록 실패 : user id = {}, board id = {}", userId, boardInfo.getId());
+			log.info("게시글 등록 실패 : user id = {}", userId);
 			throw new BoardSaveFailedException();
 		}
 		return boardInfo;
