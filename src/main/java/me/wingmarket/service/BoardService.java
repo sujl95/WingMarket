@@ -55,7 +55,7 @@ public class BoardService {
 		return boardDateSeconds < twoDaysSeconds;
 	}
 
-	public Board register(BoardSaveDto boardSaveDto, Long userId) {
+	public String register(BoardSaveDto boardSaveDto, Long userId) {
 		User userInfo = userMapper.findById(userId);
 		UserService.isEmptyUser(userInfo);
 		Board boardInfo = boardSaveDto.toEntity(userId, userInfo);
@@ -64,7 +64,7 @@ public class BoardService {
 			log.info("게시글 등록 실패 : user id = {}", userId);
 			throw new BoardSaveFailedException();
 		}
-		return boardInfo;
+		return "게시글 등록 성공";
 	}
 
 	@Transactional(readOnly = true)

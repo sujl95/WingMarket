@@ -36,7 +36,7 @@ public class BoardController {
 
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping("/boards")
-	public Board register(@Valid @RequestBody BoardSaveDto boardSaveDto, @SessionAttribute("ID") Long userId) {
+	public String register(@Valid @RequestBody BoardSaveDto boardSaveDto, @SessionAttribute("ID") Long userId) {
 		return boardService.register(boardSaveDto, userId);
 	}
 
