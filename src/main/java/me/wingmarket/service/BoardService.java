@@ -64,7 +64,7 @@ public class BoardService {
 			log.info("게시글 등록 실패 : user id = {}", userId);
 			throw new BoardSaveFailedException();
 		}
-		return "게시글 등록 성공";
+		return "게시글 등록 성공, 게시글 번호 = " + boardInfo.getId();
 	}
 
 	@Transactional(readOnly = true)
