@@ -9,13 +9,18 @@ import java.util.Objects;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -27,6 +32,8 @@ import me.wingmarket.error.exception.user.UserNotFoundException;
 @ActiveProfiles("local")
 @AutoConfigureMockMvc
 @SpringBootTest
+@Transactional
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class UserControllerTest {
 
 	@Autowired
@@ -39,19 +46,20 @@ public class UserControllerTest {
 	UserSaveDto duplicateUserSaveDto;
 	UserLoginRequest userLoginRequest;
 	UserLoginRequest badUserLoginRequest;
+
 	@BeforeEach
 	void setUp() {
 		userSaveDto = UserSaveDto.builder()
-			.userId("testId")
+			.userId("thewingtest")
 			.locationName("서울 종로구 청운동")
 			.phone("010-1234-1234")
-			.password("testpassword")
-			.nickname("testNickName")
-			.email("test@gmail.com")
+			.password("thewingpassword")
+			.nickname("thewingNickName")
+			.email("thewing@gmail.com")
 			.build();
 
 		duplicateUserSaveDto = UserSaveDto.builder()
-			.userId("devking2106")
+			.userId("thewingtest")
 			.locationName("서울 종로구 청운동")
 			.phone("010-1234-1234")
 			.password("testpassword")
@@ -60,19 +68,22 @@ public class UserControllerTest {
 			.build();
 
 		userLoginRequest = UserLoginRequest.builder()
-			.id("devking2106")
-			.password("devkingpassword")
+			.id("thewingtest")
+			.password("thewingpassword")
 			.build();
 
 		badUserLoginRequest = UserLoginRequest.builder()
-			.id("devking21061")
-			.password("devkingpassword1")
+			.id("thewingtest1")
+			.password("thewingpassword1")
 			.build();
 	}
 
 	@Test
+	@Order(0)
+	@Rollback(false)
 	@DisplayName("유저 저장 - 성공")
 	void registerSuccessTest() throws Exception {
+		System.out.println(0);
 		mockMvc.perform(post("/api/users/register")
 			.contentType(MediaType.APPLICATION_JSON)
 			.content(objectMapper.writeValueAsString(userSaveDto)))
@@ -139,9 +150,10 @@ public class UserControllerTest {
 	}
 
 	@Test
+	@Order(1)
 	@DisplayName("유저 중복 아이디 - 중복 일때 - 성공")
 	void isDuplicateSuccessTest() throws Exception {
-		mockMvc.perform(get("/api/users/duplicate/{id}", "devking2106"))
+		mockMvc.perform(get("/api/users/duplicate/{id}", "thewingtest"))
 			.andDo(print())
 			.andExpect(status().isOk())
 			.andExpect(result -> assertTrue(Boolean.parseBoolean(result.getResponse().getContentAsString())));
@@ -150,13 +162,14 @@ public class UserControllerTest {
 	@Test
 	@DisplayName("유저 중복 아이디 - 중복 아닐때 - 성공")
 	void isNotDuplicateSuccessTest() throws Exception {
-		mockMvc.perform(get("/api/users/duplicate/{id}", "devking21061"))
+		mockMvc.perform(get("/api/users/duplicate/{id}", "thewing1"))
 			.andDo(print())
 			.andExpect(status().isOk())
 			.andExpect(result -> assertFalse(Boolean.parseBoolean(result.getResponse().getContentAsString())));
 	}
 
 	@Test
+	@Order(10)
 	@DisplayName("유저 로그인 - 성공")
 	void loginSuccessTest() throws Exception {
 		mockMvc.perform(post("/api/users/login")
