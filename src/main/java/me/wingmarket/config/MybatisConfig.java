@@ -11,7 +11,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
 @Configuration
-@MapperScan("me.WingMarket.repository.mapper")
+@MapperScan("me.wingmarket.repository.mapper")
 public class MybatisConfig {
 
 	@Bean
