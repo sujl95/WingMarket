@@ -6,11 +6,17 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
 
 import me.wingmarket.common.utils.Sha256Util;
 import me.wingmarket.dto.Position;
@@ -21,6 +27,9 @@ import me.wingmarket.repository.mapper.UserMapper;
 
 @SpringBootTest
 @ActiveProfiles("local")
+@Transactional
+@Rollback(false)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class UserMapperTest {
 
 	@Autowired
@@ -36,6 +45,7 @@ public class UserMapperTest {
 	}
 
 	@Test
+	@Order(0)
 	@DisplayName("유저 저장")
 	void saveUserTest() {
 		// given
@@ -50,11 +60,11 @@ public class UserMapperTest {
 			.loginDate(saveTime)
 			.build();
 		User user = User.builder()
-			.userId("testId")
+			.userId("thewing")
 			.locationName("서울 종로구 청운동")
 			.locationId(1111010100L)
-			.password(Sha256Util.encode("testpassword"))
-			.nickname("testNickName")
+			.password(Sha256Util.encode("thewingpassword"))
+			.nickname("thewingNickName")
 			.phone("010-1234-1234")
 			.email("test@gmail.com")
 			.userDate(userDate)
@@ -71,7 +81,7 @@ public class UserMapperTest {
 	@DisplayName("유저 중복 체크 - 중복 일때")
 	void isDuplicateUserSuccessTest() {
 		// given
-		boolean result = userMapper.idCheck("devking2106");
+		boolean result = userMapper.idCheck("thewing");
 		// then
 		assertTrue(result);
 	}
@@ -98,7 +108,7 @@ public class UserMapperTest {
 	@DisplayName("유저 로그인 - 비밀번호 일치할 때")
 	void loginFindByUserIdAndPasswordUserSuccessTest() {
 		// given
-		User result = userMapper.findByIdAndPassword("devking2106", Sha256Util.encode("devkingpassword"));
+		User result = userMapper.findByIdAndPassword("thewing", Sha256Util.encode("thewingpassword"));
 		// then
 		assertNotNull(result);
 	}
@@ -107,7 +117,7 @@ public class UserMapperTest {
 	@DisplayName("유저 로그인 - 비밀번호 일치 하지 않을때")
 	void loginFindByUserIdAndPasswordUserSuccessNotMatchPasswordTest() {
 		// given
-		User result = userMapper.findByIdAndPassword("devking2106", Sha256Util.encode("devkingpassword1"));
+		User result = userMapper.findByIdAndPassword("thewing", Sha256Util.encode("thewingpassword1"));
 		// then
 		assertNull(result);
 	}

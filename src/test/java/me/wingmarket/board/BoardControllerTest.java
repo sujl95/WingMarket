@@ -9,15 +9,19 @@ import java.util.HashMap;
 import java.util.Objects;
 
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
@@ -32,6 +36,7 @@ import me.wingmarket.error.exception.board.BoardNotFoundException;
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("local")
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class BoardControllerTest {
 
 	@Autowired
@@ -97,6 +102,7 @@ class BoardControllerTest {
 	}
 
 	@Test
+	@Order(0)
 	@DisplayName("게시글 생성 테스트 - 가격 미입력 - 성공")
 	void createSuccessBoardNoPrice() throws Exception {
 		BoardSaveDto boardSaveDto = BoardSaveDto.builder()

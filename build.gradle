@@ -2,16 +2,16 @@ plugins {
     id 'org.springframework.boot' version '2.4.1'
     id 'io.spring.dependency-management' version '1.0.10.RELEASE'
     id 'java'
-    id 'org.ec4j.editorconfig' version '0.0.3'
-    id 'checkstyle'
+//    id 'org.ec4j.editorconfig' version '0.0.3'
+//    id 'checkstyle'
 }
 
-checkstyle {
-    maxWarnings = 0
-    configFile = file("${rootDir}/naver-checkstyle-rules.xml")
-    configProperties = ["suppressionFile": "${rootDir}/naver-checkstyle-suppressions.xml"]
-    toolVersion = '8.27'
-}
+//checkstyle {
+//    maxWarnings = 0
+//    configFile = file("${rootDir}/naver-checkstyle-rules.xml")
+//    configProperties = ["suppressionFile": "${rootDir}/naver-checkstyle-suppressions.xml"]
+//    toolVersion = '8.27'
+//}
 
 ext.profile = (!project.hasProperty('profile') || !profile) ? 'local' : profile
 
@@ -23,14 +23,18 @@ sourceSets {
     }
 }
 
-editorconfig {
-    excludes = ['build']
-}
+//editorconfig {
+//    excludes = ['build']
+//}
 
-check.dependsOn editorconfigCheck
+//check.dependsOn editorconfigCheck
 
 compileJava.options.encoding = 'UTF-8'
 compileTestJava.options.encoding = 'UTF-8'
+
+tasks.withType(JavaCompile) {
+    options.encoding('UTF-8')
+}
 
 group = 'me'
 version = '0.0.1-SNAPSHOT'
@@ -60,8 +64,8 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-log4j2'
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'mysql:mysql-connector-java'
-    runtimeOnly 'com.h2database:h2'
-    testRuntimeOnly 'com.h2database:h2'
+    runtimeOnly 'com.h2database:h2:1.4.196'
+    testRuntimeOnly 'com.h2database:h2:1.4.196'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'

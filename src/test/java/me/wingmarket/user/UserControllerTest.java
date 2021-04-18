@@ -83,7 +83,6 @@ public class UserControllerTest {
 	@Rollback(false)
 	@DisplayName("유저 저장 - 성공")
 	void registerSuccessTest() throws Exception {
-		System.out.println(0);
 		mockMvc.perform(post("/api/users/register")
 			.contentType(MediaType.APPLICATION_JSON)
 			.content(objectMapper.writeValueAsString(userSaveDto)))
