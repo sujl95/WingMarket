@@ -39,7 +39,7 @@ public class UserService {
 		return result < 1;
 	}
 
-	public void save(UserSaveDto userSaveDto) {
+	public long save(UserSaveDto userSaveDto) {
 		boolean duplicatedUserIdResult = isDuplicatedUserId(userSaveDto.getUserId());
 		if (duplicatedUserIdResult) {
 			throw new UserDuplicateUserIdException();
@@ -53,6 +53,7 @@ public class UserService {
 			log.info("유저 등록 실패 : userid = {}", userSaveDto.getUserId());
 			throw new UserSaveFailedException();
 		}
+		return userInfo.getId();
 	}
 
 	@Transactional(readOnly = true)

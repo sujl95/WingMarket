@@ -36,10 +36,8 @@ public class UserController {
 
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping("/register")
-	public String register(@Valid @RequestBody UserSaveDto userSaveDto) {
-		userService.save(userSaveDto);
-
-		return "회원가입을 성공했습니다";
+	public long register(@Valid @RequestBody UserSaveDto userSaveDto) {
+		return userService.save(userSaveDto);
 	}
 
 	@ResponseStatus(HttpStatus.OK)
