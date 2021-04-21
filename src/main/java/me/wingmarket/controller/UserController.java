@@ -38,6 +38,7 @@ public class UserController {
 	@PostMapping("/register")
 	public String register(@Valid @RequestBody UserSaveDto userSaveDto) {
 		userService.save(userSaveDto);
+
 		return "회원가입을 성공했습니다";
 	}
 
