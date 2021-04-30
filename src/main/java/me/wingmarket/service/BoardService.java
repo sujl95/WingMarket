@@ -40,6 +40,12 @@ public class BoardService {
 	private final LocationMapper locationMapper;
 	private final UserMapper userMapper;
 
+	private boolean isNotStatusUpdate(Board.Status status, Long userId, BoardDetailDto boardDetailDto) {
+		if (!boardDetailDto.isOwnerTo(userId)) {
+			throw new BoardNotMatchUserIdException();
+		}
+		return !boardDetailDto.isStatusUpdatable(status);
+	}
 
 	public boolean isNotReflected(int result) {
 		return result < 1;
@@ -93,8 +99,12 @@ public class BoardService {
 		return boardMapper.findByCondition(boardFindRequest, position);
 	}
 
-	public void updatePull(Long boardId, Board.Status status, Long userId,
-		BoardDetailDto boardDetailDto, LocalDateTime updateTime) {
+	public void updatePull(Long boardId, Board.Status status, Long userId) {
+		BoardDetailDto boardDetailDto = boardMapper.findById(boardId);
+		isEmptyBoard(boardDetailDto);
+		if (isNotStatusUpdate(status, userId, boardDetailDto))
+			return;
+		LocalDateTime updateTime = LocalDateTime.now();
 		LocalDateTime boardDate = boardDetailDto.getBoardDate();
 		long boardDateSeconds = Duration.between(boardDate, updateTime).getSeconds();
 		long twoDaysSeconds = Duration.ofDays(2).getSeconds();
@@ -111,21 +121,10 @@ public class BoardService {
 	public void updateStatus(Long boardId, Board.Status status, Long userId) {
 		BoardDetailDto boardDetailDto = boardMapper.findById(boardId);
 		isEmptyBoard(boardDetailDto);
-		if (!boardDetailDto.isOwnerTo(userId)) {
-			throw new BoardNotMatchUserIdException();
-		}
-		if (!boardDetailDto.isStatusUpdatable(status)) {
+		if (isNotStatusUpdate(status, userId, boardDetailDto)) {
 			return;
 		}
 		LocalDateTime updateTime = LocalDateTime.now();
-		if (status == Board.Status.PULL) {
-			updatePull(boardId, status, userId, boardDetailDto, updateTime);
-		} else {
-			updateStatus(boardId, status, userId, updateTime);
-		}
-	}
-
-	private void updateStatus(Long boardId, Board.Status status, Long userId, LocalDateTime updateTime) {
 		int result = boardMapper.updateStatus(boardId, userId, status, updateTime);
 		if (isNotReflected(result)) {
 			log.info("게시글 상태 변경 실패 : user id = {} , board id = {}", userId, boardId);

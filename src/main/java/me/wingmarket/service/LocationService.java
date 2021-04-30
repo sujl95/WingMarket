@@ -47,7 +47,6 @@ public class LocationService {
 
 	public String regionAuth(String locationName, Long userId) {
 		Location locationInfo = findByLocationName(locationName);
-		System.out.println("locationInfo = " + locationInfo);
 		int result = userMapper.updateLocation(locationInfo, userId);
 		if (isNotReflected(result)) {
 			throw new UserRegionAuthFailedException();

@@ -1,5 +1,7 @@
 package me.wingmarket.controller;
 
+import static me.wingmarket.entity.Board.Status.*;
+
 import java.util.List;
 
 import javax.validation.Valid;
@@ -63,6 +65,10 @@ public class BoardController {
 	@PatchMapping("/boards/{id}/status")
 	public void updateStatus(@PathVariable Long id, @RequestBody Board.Status status,
 		@SessionAttribute("ID") Long userId) {
+		if (status == PULL) {
+			boardService.updatePull(id, status, userId);
+			return;
+		}
 		boardService.updateStatus(id, status, userId);
 	}
 
