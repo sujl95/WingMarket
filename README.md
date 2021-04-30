@@ -59,7 +59,6 @@ http://thewing.cf:8081/swagger-ui-custom.html
 - H2 , MySQL
 
 ## Development Tools
-
 - IntelliJ IDEA
 - MySQL Workbench
-- Git SourceTreeDevelopment Environment
+- Git SourceTree
