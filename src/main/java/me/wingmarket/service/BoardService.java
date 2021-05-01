@@ -102,8 +102,9 @@ public class BoardService {
 	public void updatePull(Long boardId, Board.Status status, Long userId) {
 		BoardDetailDto boardDetailDto = boardMapper.findById(boardId);
 		isEmptyBoard(boardDetailDto);
-		if (isNotStatusUpdate(status, userId, boardDetailDto))
+		if (isNotStatusUpdate(status, userId, boardDetailDto)) {
 			return;
+		}
 		LocalDateTime updateTime = LocalDateTime.now();
 		LocalDateTime boardDate = boardDetailDto.getBoardDate();
 		long boardDateSeconds = Duration.between(boardDate, updateTime).getSeconds();
