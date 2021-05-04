@@ -5,10 +5,10 @@
 WingMarket 은 당근마켓을 벤치마킹한 위치 기반 동네 거래 플랫폼(RESTful API)입니다.
 
 ### Server
-http://thewing.cf:8081
+http://thewing.kr:8081
 
 ### Docs
-http://thewing.cf:8081/swagger-ui-custom.html
+http://thewing.kr:8081/swagger-ui-custom.html
 
 ## Project Design
 
