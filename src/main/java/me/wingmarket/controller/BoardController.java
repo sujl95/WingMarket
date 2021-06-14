@@ -42,20 +42,17 @@ public class BoardController {
 		return boardService.register(boardSaveDto, userId);
 	}
 
-	@ResponseStatus(HttpStatus.OK)
 	@GetMapping("/boards/{id}")
 	public BoardDetailDto findById(@PathVariable Long id, @SessionAttribute("ID") Long userId) {
 		return boardService.findById(id, userId);
 	}
 
-	@ResponseStatus(HttpStatus.OK)
 	@GetMapping("/boards")
 	public List<BoardFindDto> findByCondition(@Valid BoardFindRequest boardFindRequest,
 		@SessionAttribute(value = "ID") Long userId) {
 		return boardService.findByCondition(boardFindRequest);
 	}
 
-	@ResponseStatus(HttpStatus.OK)
 	@GetMapping("/users/{userId}/boards")
 	public List<BoardFindDto> findByUser(@PathVariable Long userId, @SessionAttribute("ID") Long sessionUserId) {
 		return boardService.findByUser(userId, sessionUserId);

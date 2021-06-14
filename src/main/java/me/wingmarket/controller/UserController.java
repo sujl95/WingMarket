@@ -40,25 +40,21 @@ public class UserController {
 		return userService.save(userSaveDto);
 	}
 
-	@ResponseStatus(HttpStatus.OK)
 	@GetMapping("/{id}")
 	public UserDetailDto findById(@PathVariable Long id) {
 		return userService.findById(id);
 	}
 
-	@ResponseStatus(HttpStatus.OK)
 	@GetMapping("/profile")
 	public UserDetailDto getUserProfile(@SessionAttribute("ID") Long id) {
 		return userService.findById(id);
 	}
 
-	@ResponseStatus(HttpStatus.OK)
 	@GetMapping
 	public List<UserFindDto> findByNickName(@RequestParam String nickname) {
 		return userService.findByNickName(nickname);
 	}
 
-	@ResponseStatus(HttpStatus.OK)
 	@GetMapping("/duplicate/{id}")
 	public boolean idCheck(@PathVariable String id) {
 		return userService.isDuplicatedUserId(id);

@@ -21,14 +21,12 @@ public class LocationController {
 
 	private final LocationService locationService;
 
-	@ResponseStatus(HttpStatus.OK)
 	@GetMapping("/locations")
 	public List<LocationFindDto> findAll(
 		@RequestParam(value = "region", required = false) String region, @SessionAttribute("ID") Long userId) {
 		return locationService.findAll(region, userId);
 	}
 
-	@ResponseStatus(HttpStatus.OK)
 	@GetMapping("/locations/region-auth")
 	public String regionAuth(@RequestParam(value = "location") String location, @SessionAttribute("ID") Long userId) {
 		return locationService.regionAuth(location, userId);
