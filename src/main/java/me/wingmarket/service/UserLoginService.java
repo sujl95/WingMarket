@@ -29,7 +29,7 @@ public class UserLoginService {
 		if (ObjectUtils.isEmpty(userInfo)) {
 			userLoginResponse = UserLoginResponse.FAIL;
 			responseEntity = new ResponseEntity<>(userLoginResponse, HttpStatus.UNAUTHORIZED);
-		} else if (User.Status.ACTIVE.equals(userInfo.getStatus())) {
+		} else if (User.Status.ACTIVE == userInfo.getStatus()) {
 			userLoginResponse = UserLoginResponse.SUCCESS;
 			setSessions(userInfo, session);
 			responseEntity = new ResponseEntity<>(userLoginResponse, HttpStatus.OK);
