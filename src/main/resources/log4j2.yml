@@ -32,7 +32,7 @@ Configutation:
       # Console Appender와 차이 : File과 관련된 속성, Policy와 관련 속성, Strategy와 관련된 속성
       # 1KB 가 되는 시점과 하루마다 filePattern 에 맞게 압축되어 저장
       - name: RollingFile_Appender
-        fileName: ${log-path}/user_deal.log
+        fileName: ${log-path}/wingmarket.log
         filePattern: "logs/archive/user_deal.log.%d{yyyy-MM-dd-hh-mm}.gz"
         PatternLayout:
           pattern: ${layoutPattern}
