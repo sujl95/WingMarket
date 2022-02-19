@@ -25,12 +25,12 @@ http://thewing.kr:8081/swagger-ui-custom.html
 
 [OvenApp](https://ovenapp.io/) 를 사용해서 진행했습니다
 
-![image](https://user-images.githubusercontent.com/76766501/109803379-5041de80-7c64-11eb-8e2b-e4372075ce06.png)
+![image](https://user-images.githubusercontent.com/58777597/154785997-6bdda191-6660-4d96-8a31-018768e59305.png)
 
 
 ## Convention
 
-- [Naver Hackday Convention](https://naver.github.io/hackday-conventions-java/)
+- [Naver Hackday Java Convention](https://naver.github.io/hackday-conventions-java/)
 - Java Naming Convention
 
 ## Git Flow
